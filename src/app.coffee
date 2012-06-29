@@ -1,12 +1,26 @@
 express = require('express')
+redis = require('redis-url').connect(process.env.REDISTOGO_URL);
 
 app = express.createServer();
 
 app.configure () ->
-    app.use express.bodyParser()
-    app.use express.methodOverride()
+  app.use express.bodyParser()
+  app.use express.methodOverride()
 
 app.get '/',(req, res) ->
-    res.send 'hello world'
+  res.send 'hello world'
+
+app.put '/api/:key',(req, res) ->
+  console.log req.params.key
+  console.log req.body
+  res.send 'ok'
+
+app.get '/api/:key',(req, res) ->
+  redis.get req.params.key, (err, value) ->
+    if err? then return res.send ""
+    res.send value 
+
+# put
+# get
 
 app.listen(3000);
