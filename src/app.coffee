@@ -8,19 +8,23 @@ app.configure () ->
   app.use express.methodOverride()
 
 app.get '/',(req, res) ->
-  res.send 'hello world'
+  res.send 'project info'
 
 app.put '/api/:key',(req, res) ->
-  console.log req.params.key
-  console.log req.body
-  res.send 'ok'
+  redis.set req.params.key, JSON.stringify(req.body)
+  res.end()
 
 app.get '/api/:key',(req, res) ->
   redis.get req.params.key, (err, value) ->
-    if err? then return res.send ""
-    res.send value 
+    if err?
+      res.writeHead 500
+      res.end "api error"
+    else if not value?
+      res.writeHead 404
+      res.end "no data"
+    else
+      res.writeHead 200, {'Content-Type': 'application/json'}
+      res.end value
 
-# put
-# get
 
 app.listen(3000);
