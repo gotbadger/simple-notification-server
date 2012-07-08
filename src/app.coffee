@@ -1,6 +1,6 @@
 express = require('express')
 redis = require('redis-url').connect(process.env.REDISTOGO_URL);
-
+port = if process.env.PORT? then process.env.PORT else 3000
 app = express.createServer();
 
 app.configure () ->
@@ -23,7 +23,5 @@ app.get '/api/:key',(req, res) ->
     if err? then return res.send ""
     res.send value 
 
-# put
-# get
-
-app.listen(3000);
+app.listen(port);
+console.log "simple-notification-server started on #{port}"
