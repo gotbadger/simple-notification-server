@@ -8,7 +8,9 @@ app.configure () ->
   app.use express.methodOverride()
 
 app.get '/',(req, res) ->
-  res.send 'project info'
+  #do 301 to the repo
+  res.writeHead(301, {'Location':'https://github.com/gotbadger/simple-notification-server', 'Expires': (new Date).toGMTString()});
+  res.end();
 
 app.put '/api/:key',(req, res) ->
   redis.set req.params.key, JSON.stringify(req.body)
