@@ -1,0 +1,12 @@
+Simple-Notification-Server
+
+Store and retrive JSON data via api
+
+
+To Store Data
+================
+PUT /api/somekey
+
+To Retrive Data
+================
+GET /api/somekey

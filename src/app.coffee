@@ -11,17 +11,23 @@ app.get '/',(req, res) ->
   #do 301 to the repo
   res.writeHead(301, {'Location':'https://github.com/gotbadger/simple-notification-server', 'Expires': (new Date).toGMTString()});
   res.end();
-  
 
 app.put '/api/:key',(req, res) ->
-  console.log req.params.key
-  console.log req.body
-  res.send 'ok'
+  redis.set req.params.key, JSON.stringify(req.body)
+  res.end()
 
 app.get '/api/:key',(req, res) ->
   redis.get req.params.key, (err, value) ->
-    if err? then return res.send ""
-    res.send value 
+    if err?
+      res.writeHead 500
+      res.end "api error"
+    else if not value?
+      res.writeHead 404
+      res.end "no data"
+    else
+      res.writeHead 200, {'Content-Type': 'application/json'}
+      res.end value
 
 app.listen(port);
 console.log "simple-notification-server started on #{port}"
+
